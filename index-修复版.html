@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neoo English Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366F1',
+                        secondary: '#8B5CF6',
+                        accent: '#F97316',
+                        light: '#F8FAFC',
+                        dark: '#1E293B'
+                    },
+                    fontFamily: {
+                        nunito: ['Nunito', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .glass {
+                background: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .bounce-in {
+                animation: bounceIn 0.5s ease-out;
+            }
+            @keyframes bounceIn {
+                0% { transform: scale(0.3); opacity: 0; }
+                50% { transform: scale(1.05); }
+                70% { transform: scale(0.9); }
+                100% { transform: scale(1); opacity: 1; }
+            }
+            .btn-ultimate {
+                position: relative !important;
+                z-index: 9999 !important;
+                pointer-events: auto !important;
+                cursor: pointer !important;
+                user-select: none !important;
+            }
+            .btn-ultimate:active {
+                transform: scale(0.95) !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-screen font-nunito">
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-20 -right-20 w-96 h-96 bg-purple-200 rounded-full opacity-30 blur-3xl"></div>
+        <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-blue-200 rounded-full opacity-30 blur-3xl"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-200 rounded-full opacity-20 blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 py-6 max-w-4xl relative z-10">
+        <div class="text-center mb-8">
+            <div class="inline-block mb-4 bounce-in">
+                <div class="w-28 h-28 mx-auto bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center shadow-xl">
+                    <svg viewBox="0 0 100 100" class="w-20 h-20">
+                        <circle cx="50" cy="45" r="30" fill="#FFFFFF" />
+                        <circle cx="40" cy="42" r="5" fill="#1E293B" />
+                        <circle cx="60" cy="42" r="5" fill="#1E293B" />
+                        <path d="M40 55 Q50 65 60 55" stroke="#1E293B" stroke-width="3" fill="none" stroke-linecap="round" />
+                        <ellipse cx="50" cy="75" rx="25" ry="10" fill="#FFFFFF" />
+                        <circle cx="30" cy="75" r="5" fill="#6366F1" />
+                        <circle cx="70" cy="75" r="5" fill="#6366F1" />
+                    </svg>
+                </div>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-dark mb-2 text-shadow">Neoo English Assistant</h1>
+            <p class="text-xl text-gray-600 font-medium">Topic: Transportation & Directions</p>
+        </div>
+
+        <div id="chat-container" class="glass rounded-3xl shadow-2xl p-6 mb-6 h-[550px] overflow-y-auto flex flex-col gap-5 border border-white/50">
+            <div class="text-center text-gray-500 py-16">
+                <div class="text-6xl mb-4">🚀</div>
+                <p class="text-lg">Click "Start Conversation" button</p>
+                <p class="text-lg">Let's practice English with Neoo!</p>
+            </div>
+        </div>
+
+        <div class="glass rounded-3xl shadow-xl p-6 border border-white/50">
+            <div class="flex flex-col gap-5">
+                <div class="flex justify-center gap-4 flex-wrap">
+                    <button id="start-btn" class="btn-ultimate bg-gradient-to-r from-primary to-secondary hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg">
+                        🚀 Start
+                    </button>
+                    <button id="reset-btn" class="btn-ultimate bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg">
+                        🔄 Reset
+                    </button>
+                </div>
+
+                <button id="speak-btn" class="btn-ultimate bg-gradient-to-r from-accent to-orange-500 hover:from-orange-500 hover:to-red-500 text-white font-bold py-5 px-12 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-xl hidden">
+                    🎤 Hold to Speak
+                </button>
+
+                <div id="text-input-area" class="hidden">
+                    <div id="quick-phrases" class="flex flex-wrap gap-2 mb-4 justify-center">
+                        <button class="quick-phrase px-3 py-2 bg-gradient-to-r from-green-100 to-green-200 hover:from-green-200 hover:to-green-300 rounded-full text-sm transition-colors font-medium text-green-800" data-text="Nice to meet you too!">Nice to meet you too!</button>
+                        <button class="quick-phrase px-3 py-2 bg-gradient-to-r from-blue-100 to-blue-200 hover:from-blue-200 hover:to-blue-300 rounded-full text-sm transition-colors font-medium text-blue-800" data-text="Yes! Our melons are very sweet and fresh.">Yes! Our melons are great!</button>
+                        <button class="quick-phrase px-3 py-2 bg-gradient-to-r from-purple-100 to-purple-200 hover:from-purple-200 hover:to-purple-300 rounded-full text-sm transition-colors font-medium text-purple-800" data-text="You can take the high-speed train. It only takes two hours.">Take high-speed train!</button>
+                        <button class="quick-phrase px-3 py-2 bg-gradient-to-r from-orange-100 to-orange-200 hover:from-orange-200 hover:to-orange-300 rounded-full text-sm transition-colors font-medium text-orange-800" data-text="Go to the local fruit market or supermarket.">Fruit market!</button>
+                        <button class="quick-phrase px-3 py-2 bg-gradient-to-r from-pink-100 to-pink-200 hover:from-pink-200 hover:to-pink-300 rounded-full text-sm transition-colors font-medium text-pink-800" data-text="Go straight and turn left at the traffic lights.">Go straight & turn left!</button>
+                        <button class="quick-phrase px-3 py-2 bg-gradient-to-r from-indigo-100 to-indigo-200 hover:from-indigo-200 hover:to-indigo-300 rounded-full text-sm transition-colors font-medium text-indigo-800" data-text="See you! Have a nice trip!">See you!</button>
+                    </div>
+                    <div class="flex gap-3">
+                        <input type="text" id="text-input" placeholder="Type your answer..." class="flex-1 px-6 py-4 rounded-full border-2 border-primary/30 focus:border-primary focus:outline-none text-lg">
+                        <button id="send-btn" class="btn-ultimate bg-gradient-to-r from-primary to-secondary hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-4 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg">
+                            Send
+                        </button>
+                    </div>
+                </div>
+
+                <div id="status" class="text-center text-gray-700 h-8 text-lg font-medium"></div>
+            </div>
+        </div>
+
+        <div class="glass rounded-3xl shadow-xl p-6 mt-8 border border-white/50">
+            <h3 class="font-bold text-xl mb-4 text-dark flex items-center">
+                <span class="mr-2">📖</span> Instructions
+            </h3>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 text-lg">
+                <li>Click "Start" to begin the conversation</li>
+                <li>When Neoo finishes speaking, hold "Hold to Speak" to answer in English</li>
+                <li>Release the button to send your voice</li>
+                <li>Topics: Transportation and asking for directions</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const openingLines = [
+            { q: "Hello! I am Neoo from the UK. Nice to meet you!", next: "greeting" },
+            { q: "I heard your melon is very delicious. Is that true?", next: "melon" },
+            { q: "That's great! I want to buy some in Xi'an. How can I get to Xi'an?", next: "transport" },
+            { q: "Where can I buy the melon after arriving?", next: "location" },
+            { q: "Thank you so much! How can I get to the melon market?", next: "directions" },
+            { q: "I am leaving now. See you in Xi'an! Have a nice day!", next: "goodbye" }
+        ];
+
+        let dialogueStage = 0;
+        let isListening = false;
+        let recognition;
+        let synthesis = window.speechSynthesis;
+        let conversationStarted = false;
+        let userActivated = false;
+
+        const chatContainer = document.getElementById('chat-container');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const speakBtn = document.getElementById('speak-btn');
+        const statusText = document.getElementById('status');
+        const textInputArea = document.getElementById('text-input-area');
+        const textInput = document.getElementById('text-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        let isMobile = /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent);
+        let isMobileEdge = /Edg/i.test(navigator.userAgent) && isMobile;
+        let browserSupportsSpeech = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+
+        function addMessage(text, type) {
+            const div = document.createElement('div');
+            div.className = type === 'user' ? 'flex justify-end' : 'flex justify-start';
+            div.innerHTML = `
+                <div class="max-w-[80%] px-6 py-4 rounded-3xl ${type === 'user'
+                    ? 'bg-gradient-to-r from-primary to-secondary text-white rounded-br-lg'
+                    : 'bg-white shadow-lg text-gray-800 rounded-bl-lg'}">
+                    <p class="text-lg">${text}</p>
+                </div>
+            `;
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function speak(text, callback) {
+            if (!userActivated) { if (callback) callback(); return; }
+            synthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+            utterance.pitch = 1.1;
+            utterance.onend = () => { if (callback) callback(); };
+            utterance.onerror = () => { if (callback) callback(); };
+            synthesis.speak(utterance);
+        }
+
+        function handleUserInput(userText) {
+            statusText.textContent = 'Neoo is thinking...';
+            if (dialogueStage < openingLines.length) {
+                dialogueStage++;
+                if (dialogueStage < openingLines.length) {
+                    setTimeout(() => {
+                        const aiResponse = openingLines[dialogueStage].q;
+                        addMessage(aiResponse, 'ai');
+                        speak(aiResponse, () => {
+                            statusText.textContent = 'Your turn!';
+                        });
+                    }, 1200);
+                } else {
+                    statusText.textContent = 'Conversation ended! Click Reset';
+                }
+                return;
+            }
+            setTimeout(() => {
+                let aiResponse = getAIResponse(userText.toLowerCase());
+                addMessage(aiResponse, 'ai');
+                speak(aiResponse, () => {
+                    statusText.textContent = 'Your turn!';
+                });
+            }, 1000);
+        }
+
+        function getAIResponse(userText) {
+            if (userText.includes('plane') || userText.includes('airplane') || userText.includes('flight')) {
+                return "You can take a plane. It is very fast.";
+            }
+            if (userText.includes('train') || userText.includes('railway')) {
+                return "You can take a train. It is comfortable and cheap.";
+            }
+            if (userText.includes('bus')) {
+                return "You can take the No. 5 bus. It goes there directly.";
+            }
+            if (userText.includes('subway') || userText.includes('metro')) {
+                return "You can take the subway Line 2. Get off at Bell Tower Station.";
+            }
+            if (userText.includes('taxi') || userText.includes('car')) {
+                return "You can take a taxi. It takes about 30 minutes.";
+            }
+            if (userText.includes('walk') || userText.includes('foot')) {
+                return "It is not far. You can walk there in 10 minutes.";
+            }
+            if (userText.includes('bike') || userText.includes('bicycle')) {
+                return "You can ride a bike. It is good exercise.";
+            }
+            if (userText.includes('how') && userText.includes('get')) {
+                return "Go straight and turn left at the first crossing. It is on your right.";
+            }
+            if (userText.includes('where') && userText.includes('station')) {
+                return "The station is over there. You can see the big blue sign.";
+            }
+            if (userText.includes('far')) {
+                return "It is about 2 kilometers away. Not very far.";
+            }
+            if (userText.includes('long') && userText.includes('take')) {
+                return "It takes about 20 minutes by bus.";
+            }
+            if (userText.includes('traffic')) {
+                return "The traffic is busy in the morning. You should leave early.";
+            }
+            if (userText.includes('ticket')) {
+                return "You can buy the ticket at the station or on your phone.";
+            }
+            return "Sorry, I can only talk about today's English topics.";
+        }
+
+        function initSpeechRecognition() {
+            if (!browserSupportsSpeech) return;
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = true;
+            recognition.maxAlternatives = 1;
+            recognition.continuous = false;
+
+            recognition.onstart = () => {
+                isListening = true;
+                speakBtn.innerHTML = '🔴 Listening...';
+                speakBtn.classList.remove('from-accent', 'to-orange-500');
+                speakBtn.classList.add('bg-red-500');
+                statusText.textContent = 'Listening...';
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                speakBtn.innerHTML = '🎤 Hold to Speak';
+                speakBtn.classList.remove('bg-red-500');
+                speakBtn.classList.add('from-accent', 'to-orange-500');
+                statusText.textContent = '';
+            };
+
+            recognition.onresult = (event) => {
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        const text = event.results[i][0].transcript.trim();
+                        if (text) {
+                            addMessage(text, 'user');
+                            handleUserInput(text);
+                        }
+                    }
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Recognition error:', event.error);
+                if (event.error !== 'no-speech') {
+                    statusText.textContent = 'Error: ' + event.error;
+                }
+            };
+        }
+
+        async function startConversation() {
+            userActivated = true;
+            chatContainer.innerHTML = '';
+            dialogueStage = 0;
+            conversationStarted = true;
+            startBtn.classList.add('hidden');
+
+            if (browserSupportsSpeech) {
+                speakBtn.classList.remove('hidden');
+                textInputArea.classList.add('hidden');
+                
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    stream.getTracks().forEach(track => track.stop());
+                    statusText.textContent = isMobile ? 'Microphone ready! Hold to speak' : 'Microphone ready';
+                } catch (err) {
+                    statusText.textContent = isMobile ? 'Hold button to allow microphone' : 'Click button to start';
+                }
+            } else {
+                speakBtn.classList.add('hidden');
+                textInputArea.classList.remove('hidden');
+                statusText.textContent = 'Using text input mode';
+            }
+
+            const firstLine = openingLines[0].q;
+            addMessage(firstLine, 'ai');
+
+            setTimeout(() => {
+                speak(firstLine, () => {
+                    statusText.textContent = isMobile ? 'Hold button to speak' : 'Your turn!';
+                });
+            }, 500);
+        }
+
+        function resetConversation() {
+            synthesis.cancel();
+            if (recognition) recognition.stop();
+            chatContainer.innerHTML = `
+                <div class="text-center text-gray-500 py-16">
+                    <div class="text-6xl mb-4">🚀</div>
+                    <p class="text-lg">Click "Start Conversation" button</p>
+                    <p class="text-lg">Let's practice English with Neoo!</p>
+                </div>
+            `;
+            dialogueStage = 0;
+            conversationStarted = false;
+            userActivated = false;
+            startBtn.classList.remove('hidden');
+            speakBtn.classList.add('hidden');
+            textInputArea.classList.add('hidden');
+            statusText.textContent = '';
+        }
+
+        function startListening() {
+            if (!recognition || isListening || !conversationStarted) return;
+            try { recognition.start(); } catch (e) { console.error(e); }
+        }
+
+        function stopListening() {
+            if (isListening && recognition) {
+                try { recognition.stop(); } catch (e) { console.error(e); }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initSpeechRecognition();
+
+            startBtn.addEventListener('click', startConversation);
+            resetBtn.addEventListener('click', resetConversation);
+
+            document.querySelectorAll('.quick-phrase').forEach(button => {
+                button.addEventListener('click', () => {
+                    addMessage(button.dataset.text, 'user');
+                    handleUserInput(button.dataset.text);
+                });
+            });
+
+            sendBtn.addEventListener('click', () => {
+                const text = textInput.value.trim();
+                if (text) {
+                    addMessage(text, 'user');
+                    handleUserInput(text);
+                    textInput.value = '';
+                }
+            });
+
+            textInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const text = textInput.value.trim();
+                    if (text) {
+                        addMessage(text, 'user');
+                        handleUserInput(text);
+                        textInput.value = '';
+                    }
+                }
+            });
+
+            speakBtn.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                startListening();
+            });
+
+            speakBtn.addEventListener('mouseup', stopListening);
+            speakBtn.addEventListener('mouseleave', stopListening);
+
+            if (isMobile) {
+                speakBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    startListening();
+                }, { passive: false });
+
+                speakBtn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    stopListening();
+                }, { passive: false });
+
+                speakBtn.addEventListener('touchcancel', stopListening);
+            }
+        });
+    </script>
+</body>
+</html>
