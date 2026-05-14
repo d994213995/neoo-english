@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neoo English</title>
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 15px;
             margin: 0;
-            padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 550px;
             margin: 0 auto;
         }
         .header {
@@ -25,91 +25,139 @@
             font-size: 28px;
             margin: 0;
         }
-        .chat-box {
+        .card {
             background: white;
-            border-radius: 20px;
+            border-radius: 25px;
             padding: 20px;
-            min-height: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        .message {
-            margin: 10px 0;
+        .chat {
+            min-height: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        .msg {
             padding: 12px 18px;
+            margin: 8px 0;
             border-radius: 20px;
-            max-width: 80%;
+            max-width: 85%;
+            line-height: 1.5;
+            font-size: 15px;
         }
-        .ai-message {
-            background: #f0f0f0;
+        .ai {
+            background: #e9ecef;
             color: #333;
-            border-radius: 20px 20px 20px 5px;
+            border-bottom-left-radius: 5px;
         }
-        .user-message {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .user {
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             margin-left: auto;
-            border-radius: 20px 20px 5px 20px;
+            border-bottom-right-radius: 5px;
         }
         .status {
             text-align: center;
             color: #666;
             margin: 10px 0;
+            font-size: 14px;
+            min-height: 24px;
         }
         .btn {
             width: 100%;
-            padding: 15px;
-            font-size: 18px;
+            padding: 16px;
+            font-size: 17px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s;
-            margin: 10px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 8px 0;
+            font-weight: bold;
         }
-        .btn-start {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .start {
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
-        .btn-start:hover {
+        .start:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+            box-shadow: 0 8px 25px rgba(102,126,234,0.4);
         }
-        .btn-speak {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        .speak {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
             color: white;
-            font-size: 20px;
+            font-size: 18px;
         }
-        .btn-speak:hover {
+        .speak:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(245,87,108,0.4);
+            box-shadow: 0 8px 25px rgba(245,87,108,0.4);
         }
-        .btn-speak.recording {
+        .speak.recording {
             background: #ff4444;
             animation: pulse 1s infinite;
         }
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255,68,68,0.7); }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,68,68,0.7); }
             70% { box-shadow: 0 0 0 10px rgba(255,68,68,0); }
-            100% { box-shadow: 0 0 0 0 rgba(255,68,68,0); }
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .input-area input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-area input:focus {
+            border-color: #667eea;
+        }
+        .input-area button {
+            padding: 14px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .input-area button:hover {
+            background: #5a6fd6;
+        }
+        .quick {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .quick button {
+            padding: 10px 14px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .quick button:hover {
+            background: #dee2e6;
         }
         .hidden {
             display: none;
         }
-        .quick-phrases {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 15px;
-        }
-        .quick-btn {
-            padding: 8px 16px;
-            background: #e8e8e8;
-            border: none;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .quick-btn:hover {
-            background: #ddd;
+        .system {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin: 10px 0;
+            font-style: italic;
         }
     </style>
 </head>
@@ -117,32 +165,46 @@
     <div class="container">
         <div class="header">
             <h1>👋 Neoo English Assistant</h1>
-            <p style="opacity: 0.9;">Practice English conversation</p>
+            <p style="opacity: 0.9; margin: 5px 0;">Practice English conversation</p>
         </div>
         
-        <div class="chat-box" id="chatBox">
-            <div style="text-align: center; color: #999; padding: 40px 0;">
-                <div style="font-size: 48px; margin-bottom: 10px;">🚀</div>
-                <p>Click "Start Conversation"</p>
-                <p>Let's practice English!</p>
+        <div class="card">
+            <div class="chat" id="chat">
+                <div style="text-align: center; color: #999; padding: 60px 0;">
+                    <div style="font-size: 50px; margin-bottom: 15px;">🚀</div>
+                    <p style="font-size: 16px;">Click "Start Conversation"</p>
+                    <p style="font-size: 14px; margin-top: 5px;">Let's practice English together!</p>
+                </div>
+            </div>
+            
+            <div class="status" id="status"></div>
+            
+            <button class="btn start" id="startBtn">🚀 Start Conversation</button>
+            
+            <div id="main-area" class="hidden">
+                <button class="btn speak" id="speakBtn">🎤 Hold to Speak</button>
+                
+                <div class="input-area">
+                    <input type="text" id="textInput" placeholder="Type your message...">
+                    <button id="sendBtn">Send</button>
+                </div>
+                
+                <div class="quick" id="quick">
+                    <button data="Nice to meet you too!">Nice to meet you!</button>
+                    <button data="Yes, our melons are very sweet!">Yes, melons!</button>
+                    <button data="You can take the train.">Take train</button>
+                    <button data="Go straight and turn left.">Go left</button>
+                    <button data="Thank you! See you!">Thank you!</button>
+                    <button data="The market is near the station.">Market location</button>
+                </div>
             </div>
         </div>
         
-        <div class="status" id="status"></div>
-        
-        <button class="btn btn-start" id="startBtn">🚀 Start Conversation</button>
-        <button class="btn btn-speak hidden" id="speakBtn">🎤 Hold to Speak</button>
-        
-        <div class="quick-phrases hidden" id="quickPhrases">
-            <button class="quick-btn" data-text="Nice to meet you too!">Nice to meet you!</button>
-            <button class="quick-btn" data-text="You can take the train.">Take train</button>
-            <button class="quick-btn" data-text="Go straight and turn left.">Go straight</button>
-            <button class="quick-btn" data-text="See you!">See you!</button>
-        </div>
+        <div class="system" id="system"></div>
     </div>
 
     <script>
-        const lines = [
+        const dialogues = [
             "Hello! I am Neoo from the UK. Nice to meet you!",
             "I heard your melon is very delicious. Is that true?",
             "That's great! I want to buy some in Xi'an. How can I get to Xi'an?",
@@ -151,148 +213,203 @@
             "I am leaving now. See you in Xi'an! Have a nice day!"
         ];
 
-        let stage = 0;
-        let isRecording = false;
+        let step = 0;
+        let recognizing = false;
         let recognition;
         let synthesis = window.speechSynthesis;
+        let started = false;
 
-        const chatBox = document.getElementById('chatBox');
+        const chat = document.getElementById('chat');
         const startBtn = document.getElementById('startBtn');
         const speakBtn = document.getElementById('speakBtn');
         const status = document.getElementById('status');
-        const quickPhrases = document.getElementById('quickPhrases');
+        const mainArea = document.getElementById('main-area');
+        const textInput = document.getElementById('textInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const system = document.getElementById('system');
 
         function addMessage(text, isUser) {
             const div = document.createElement('div');
-            div.className = isUser ? 'message user-message' : 'message ai-message';
+            div.className = 'msg ' + (isUser ? 'user' : 'ai');
             div.textContent = text;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
         }
 
         function speak(text) {
-            if (!window.userActivated) return;
+            if (!started) return;
             synthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(text);
-            utter.lang = 'en-US';
-            utter.rate = 0.85;
-            utter.pitch = 1.1;
-            synthesis.speak(utter);
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+            utterance.pitch = 1.1;
+            utterance.onend = function() {
+                if (step < dialogues.length || started) {
+                    status.textContent = 'Your turn!';
+                }
+            };
+            synthesis.speak(utterance);
         }
 
         function getResponse(text) {
             text = text.toLowerCase();
-            if (text.includes('plane')) return "You can take a plane. It is very fast.";
-            if (text.includes('train')) return "You can take a train. It is comfortable.";
-            if (text.includes('bus')) return "You can take the No. 5 bus.";
-            if (text.includes('subway')) return "Take subway Line 2.";
-            if (text.includes('walk')) return "You can walk there in 10 minutes.";
-            if (text.includes('how') && text.includes('get')) return "Go straight and turn left.";
-            if (text.includes('far')) return "It is about 2 kilometers away.";
-            return "Sorry, I can only talk about transportation.";
+            if (text.includes('plane') || text.includes('airplane')) return "You can take a plane. It is very fast.";
+            if (text.includes('train')) return "You can take a train. It is comfortable and cheap.";
+            if (text.includes('bus')) return "You can take the No. 5 bus. It goes there directly.";
+            if (text.includes('subway') || text.includes('metro')) return "You can take the subway Line 2. Get off at Bell Tower Station.";
+            if (text.includes('walk') || text.includes('foot')) return "It is not far. You can walk there in 10 minutes.";
+            if (text.includes('bike') || text.includes('bicycle')) return "You can ride a bike. It is good exercise.";
+            if (text.includes('how') && text.includes('get')) return "Go straight and turn left at the first crossing.";
+            if (text.includes('where') && text.includes('station')) return "The station is over there. Look for the big blue sign.";
+            if (text.includes('far')) return "It is about 2 kilometers away. Not very far.";
+            if (text.includes('long') && text.includes('take')) return "It takes about 20 minutes by bus.";
+            if (text.includes('yes') || text.includes('thank') || text.includes('nice')) return "Great! I'm glad to hear that.";
+            return "Sorry, I can only talk about transportation and directions today.";
         }
 
-        function handleInput(text) {
-            addMessage(text, true);
+        function handleInput(userText) {
+            if (!started || !userText.trim()) return;
+            
+            addMessage(userText.trim(), true);
             status.textContent = 'Neoo is thinking...';
             
-            stage++;
-            if (stage < lines.length) {
-                setTimeout(() => {
-                    const response = lines[stage];
-                    addMessage(response, false);
-                    speak(response);
-                    status.textContent = 'Your turn!';
-                }, 1200);
-            } else {
-                setTimeout(() => {
-                    const response = getResponse(text);
-                    addMessage(response, false);
-                    speak(response);
-                    status.textContent = 'Your turn!';
-                }, 1000);
-            }
+            step++;
+            setTimeout(function() {
+                let response;
+                if (step < dialogues.length) {
+                    response = dialogues[step];
+                } else {
+                    response = getResponse(userText);
+                }
+                addMessage(response, false);
+                speak(response);
+            }, 1200);
         }
 
-        function initRecognition() {
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                status.textContent = 'Your browser does not support speech recognition.';
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                system.textContent = '⚠️ Speech recognition not supported, use text input';
                 return;
             }
 
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             recognition.lang = 'en-US';
             recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
 
-            recognition.onstart = () => {
-                isRecording = true;
+            recognition.onstart = function() {
+                recognizing = true;
                 speakBtn.classList.add('recording');
                 speakBtn.textContent = '🔴 Recording...';
                 status.textContent = 'Listening...';
             };
 
-            recognition.onend = () => {
-                isRecording = false;
+            recognition.onend = function() {
+                recognizing = false;
                 speakBtn.classList.remove('recording');
                 speakBtn.textContent = '🎤 Hold to Speak';
-                status.textContent = '';
             };
 
-            recognition.onresult = (e) => {
-                const text = e.results[0][0].transcript.trim();
-                if (text) handleInput(text);
+            recognition.onresult = function(event) {
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        const text = event.results[i][0].transcript.trim();
+                        if (text) {
+                            handleInput(text);
+                        }
+                    }
+                }
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Recognition error:', event.error);
+                if (event.error === 'not-allowed') {
+                    status.textContent = 'Please allow microphone access';
+                }
             };
         }
 
-        startBtn.addEventListener('click', () => {
-            window.userActivated = true;
-            chatBox.innerHTML = '';
-            stage = 0;
+        startBtn.addEventListener('click', function() {
+            started = true;
+            chat.innerHTML = '';
+            step = 0;
             
             startBtn.classList.add('hidden');
-            speakBtn.classList.remove('hidden');
-            quickPhrases.classList.remove('hidden');
+            mainArea.classList.remove('hidden');
             
-            const firstLine = lines[0];
+            const firstLine = dialogues[0];
             addMessage(firstLine, false);
             status.textContent = 'Neoo is speaking...';
             
-            setTimeout(() => {
+            setTimeout(function() {
                 speak(firstLine);
-                status.textContent = 'Your turn!';
             }, 500);
         });
 
-        speakBtn.addEventListener('mousedown', () => {
-            if (!recognition) initRecognition();
-            if (recognition) recognition.start();
+        speakBtn.addEventListener('mousedown', function() {
+            if (!recognition) initSpeechRecognition();
+            if (recognition && !recognizing) {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    status.textContent = 'Click Start first';
+                }
+            }
         });
 
-        speakBtn.addEventListener('mouseup', () => {
-            if (recognition && isRecording) recognition.stop();
+        speakBtn.addEventListener('mouseup', function() {
+            if (recognition && recognizing) {
+                recognition.stop();
+            }
         });
 
-        speakBtn.addEventListener('mouseleave', () => {
-            if (recognition && isRecording) recognition.stop();
+        speakBtn.addEventListener('mouseleave', function() {
+            if (recognition && recognizing) {
+                recognition.stop();
+            }
         });
 
-        speakBtn.addEventListener('touchstart', (e) => {
+        speakBtn.addEventListener('touchstart', function(e) {
             e.preventDefault();
-            if (!recognition) initRecognition();
-            if (recognition) recognition.start();
+            if (!recognition) initSpeechRecognition();
+            if (recognition && !recognizing) {
+                recognition.start();
+            }
         }, { passive: false });
 
-        speakBtn.addEventListener('touchend', (e) => {
+        speakBtn.addEventListener('touchend', function(e) {
             e.preventDefault();
-            if (recognition && isRecording) recognition.stop();
+            if (recognition && recognizing) {
+                recognition.stop();
+            }
         }, { passive: false });
 
-        document.querySelectorAll('.quick-btn').forEach(btn => {
-            btn.addEventListener('click', () => handleInput(btn.dataset.text));
+        sendBtn.addEventListener('click', function() {
+            const text = textInput.value.trim();
+            if (text) {
+                handleInput(text);
+                textInput.value = '';
+            }
         });
 
-        initRecognition();
+        textInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const text = textInput.value.trim();
+                if (text) {
+                    handleInput(text);
+                    textInput.value = '';
+                }
+            }
+        });
+
+        document.querySelectorAll('.quick button').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                handleInput(btn.getAttribute('data'));
+            });
+        });
+
+        initSpeechRecognition();
     </script>
 </body>
 </html>
