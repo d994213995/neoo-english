@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Neoo English</title>
     <style>
         body {
@@ -11,6 +11,7 @@
             min-height: 100vh;
             padding: 15px;
             margin: 0;
+            touch-action: manipulation;
         }
         .container {
             max-width: 550px;
@@ -19,10 +20,10 @@
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .header h1 {
-            font-size: 28px;
+            font-size: 26px;
             margin: 0;
         }
         .card {
@@ -33,7 +34,7 @@
         }
         .chat {
             min-height: 300px;
-            max-height: 400px;
+            max-height: 380px;
             overflow-y: auto;
             margin-bottom: 15px;
             padding: 15px;
@@ -61,10 +62,17 @@
         }
         .status {
             text-align: center;
-            color: #666;
+            color: #555;
             margin: 10px 0;
             font-size: 14px;
             min-height: 24px;
+            font-weight: 500;
+        }
+        .status.error {
+            color: #e74c3c;
+        }
+        .status.success {
+            color: #27ae60;
         }
         .btn {
             width: 100%;
@@ -73,7 +81,7 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
             margin: 8px 0;
             font-weight: bold;
         }
@@ -81,26 +89,24 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
-        .start:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+        .start:active {
+            transform: scale(0.98);
         }
-        .speak {
+        .mic {
             background: linear-gradient(135deg, #f093fb, #f5576c);
             color: white;
             font-size: 18px;
         }
-        .speak:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(245,87,108,0.4);
+        .mic:active {
+            transform: scale(0.95);
         }
-        .speak.recording {
-            background: #ff4444;
-            animation: pulse 1s infinite;
+        .mic.recording {
+            background: #e74c3c;
+            animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255,68,68,0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255,68,68,0); }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0.5); }
+            50% { box-shadow: 0 0 0 15px rgba(231,76,60,0); }
         }
         .input-area {
             display: flex;
@@ -114,7 +120,6 @@
             border-radius: 50px;
             font-size: 15px;
             outline: none;
-            transition: border-color 0.3s;
         }
         .input-area input:focus {
             border-color: #667eea;
@@ -127,9 +132,6 @@
             border-radius: 50px;
             font-weight: bold;
             cursor: pointer;
-        }
-        .input-area button:hover {
-            background: #5a6fd6;
         }
         .quick {
             display: flex;
@@ -144,20 +146,34 @@
             border-radius: 20px;
             font-size: 13px;
             cursor: pointer;
-            transition: background 0.2s;
         }
-        .quick button:hover {
+        .quick button:active {
             background: #dee2e6;
         }
         .hidden {
             display: none;
         }
-        .system {
+        .permission-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 20px;
             text-align: center;
-            font-size: 12px;
-            color: #999;
-            margin: 10px 0;
-            font-style: italic;
+            margin-bottom: 15px;
+        }
+        .permission-box p {
+            margin: 0 0 15px 0;
+            color: #856404;
+        }
+        .permission-box button {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
         }
     </style>
 </head>
@@ -165,15 +181,18 @@
     <div class="container">
         <div class="header">
             <h1>👋 Neoo English Assistant</h1>
-            <p style="opacity: 0.9; margin: 5px 0;">Practice English conversation</p>
         </div>
         
         <div class="card">
+            <div id="permissionBox" class="permission-box">
+                <p>🎤 Please allow microphone access to use voice</p>
+                <button id="allowMicBtn">Allow Microphone</button>
+            </div>
+            
             <div class="chat" id="chat">
-                <div style="text-align: center; color: #999; padding: 60px 0;">
-                    <div style="font-size: 50px; margin-bottom: 15px;">🚀</div>
-                    <p style="font-size: 16px;">Click "Start Conversation"</p>
-                    <p style="font-size: 14px; margin-top: 5px;">Let's practice English together!</p>
+                <div style="text-align: center; color: #999; padding: 50px 0;">
+                    <div style="font-size: 45px; margin-bottom: 10px;">🚀</div>
+                    <p>Click "Start" to begin</p>
                 </div>
             </div>
             
@@ -181,11 +200,11 @@
             
             <button class="btn start" id="startBtn">🚀 Start Conversation</button>
             
-            <div id="main-area" class="hidden">
-                <button class="btn speak" id="speakBtn">🎤 Hold to Speak</button>
+            <div id="mainArea" class="hidden">
+                <button class="btn mic" id="micBtn">🎤 Tap to Speak</button>
                 
                 <div class="input-area">
-                    <input type="text" id="textInput" placeholder="Type your message...">
+                    <input type="text" id="textInput" placeholder="Or type your message...">
                     <button id="sendBtn">Send</button>
                 </div>
                 
@@ -195,12 +214,10 @@
                     <button data="You can take the train.">Take train</button>
                     <button data="Go straight and turn left.">Go left</button>
                     <button data="Thank you! See you!">Thank you!</button>
-                    <button data="The market is near the station.">Market location</button>
+                    <button data="The market is near the station.">Market</button>
                 </div>
             </div>
         </div>
-        
-        <div class="system" id="system"></div>
     </div>
 
     <script>
@@ -215,18 +232,20 @@
 
         let step = 0;
         let recognizing = false;
-        let recognition;
+        let recognition = null;
         let synthesis = window.speechSynthesis;
         let started = false;
+        let micEnabled = false;
 
         const chat = document.getElementById('chat');
         const startBtn = document.getElementById('startBtn');
-        const speakBtn = document.getElementById('speakBtn');
+        const micBtn = document.getElementById('micBtn');
         const status = document.getElementById('status');
-        const mainArea = document.getElementById('main-area');
+        const mainArea = document.getElementById('mainArea');
         const textInput = document.getElementById('textInput');
         const sendBtn = document.getElementById('sendBtn');
-        const system = document.getElementById('system');
+        const permissionBox = document.getElementById('permissionBox');
+        const allowMicBtn = document.getElementById('allowMicBtn');
 
         function addMessage(text, isUser) {
             const div = document.createElement('div');
@@ -243,35 +262,27 @@
             utterance.lang = 'en-US';
             utterance.rate = 0.85;
             utterance.pitch = 1.1;
-            utterance.onend = function() {
-                if (step < dialogues.length || started) {
-                    status.textContent = 'Your turn!';
-                }
-            };
             synthesis.speak(utterance);
         }
 
         function getResponse(text) {
             text = text.toLowerCase();
-            if (text.includes('plane') || text.includes('airplane')) return "You can take a plane. It is very fast.";
-            if (text.includes('train')) return "You can take a train. It is comfortable and cheap.";
-            if (text.includes('bus')) return "You can take the No. 5 bus. It goes there directly.";
-            if (text.includes('subway') || text.includes('metro')) return "You can take the subway Line 2. Get off at Bell Tower Station.";
-            if (text.includes('walk') || text.includes('foot')) return "It is not far. You can walk there in 10 minutes.";
-            if (text.includes('bike') || text.includes('bicycle')) return "You can ride a bike. It is good exercise.";
-            if (text.includes('how') && text.includes('get')) return "Go straight and turn left at the first crossing.";
-            if (text.includes('where') && text.includes('station')) return "The station is over there. Look for the big blue sign.";
-            if (text.includes('far')) return "It is about 2 kilometers away. Not very far.";
-            if (text.includes('long') && text.includes('take')) return "It takes about 20 minutes by bus.";
+            if (text.includes('plane')) return "You can take a plane. It is very fast.";
+            if (text.includes('train')) return "You can take a train. It is comfortable.";
+            if (text.includes('bus')) return "You can take the No. 5 bus.";
+            if (text.includes('walk')) return "You can walk there in 10 minutes.";
+            if (text.includes('how') && text.includes('get')) return "Go straight and turn left.";
+            if (text.includes('far')) return "It is about 2 kilometers away.";
             if (text.includes('yes') || text.includes('thank') || text.includes('nice')) return "Great! I'm glad to hear that.";
-            return "Sorry, I can only talk about transportation and directions today.";
+            return "Sorry, I can only talk about transportation today.";
         }
 
         function handleInput(userText) {
             if (!started || !userText.trim()) return;
             
             addMessage(userText.trim(), true);
-            status.textContent = 'Neoo is thinking...';
+            status.textContent = 'Thinking...';
+            status.className = 'status';
             
             step++;
             setTimeout(function() {
@@ -283,52 +294,80 @@
                 }
                 addMessage(response, false);
                 speak(response);
+                status.textContent = 'Your turn!';
+                status.className = 'status success';
             }, 1200);
         }
 
         function initSpeechRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
-                system.textContent = '⚠️ Speech recognition not supported, use text input';
-                return;
+                status.textContent = 'Speech recognition not supported';
+                status.className = 'status error';
+                return false;
             }
 
             recognition = new SpeechRecognition();
             recognition.lang = 'en-US';
             recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
+            recognition.continuous = false;
 
             recognition.onstart = function() {
                 recognizing = true;
-                speakBtn.classList.add('recording');
-                speakBtn.textContent = '🔴 Recording...';
+                micBtn.classList.add('recording');
+                micBtn.textContent = '🔴 Listening...';
                 status.textContent = 'Listening...';
+                status.className = 'status';
             };
 
             recognition.onend = function() {
                 recognizing = false;
-                speakBtn.classList.remove('recording');
-                speakBtn.textContent = '🎤 Hold to Speak';
+                micBtn.classList.remove('recording');
+                micBtn.textContent = '🎤 Tap to Speak';
             };
 
             recognition.onresult = function(event) {
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    if (event.results[i].isFinal) {
-                        const text = event.results[i][0].transcript.trim();
-                        if (text) {
-                            handleInput(text);
-                        }
-                    }
+                const text = event.results[0][0].transcript.trim();
+                if (text) {
+                    handleInput(text);
                 }
             };
 
             recognition.onerror = function(event) {
-                console.error('Recognition error:', event.error);
+                console.error('Speech error:', event.error);
+                recognizing = false;
+                micBtn.classList.remove('recording');
+                micBtn.textContent = '🎤 Tap to Speak';
+                
                 if (event.error === 'not-allowed') {
-                    status.textContent = 'Please allow microphone access';
+                    status.textContent = 'Microphone denied. Use text input.';
+                    status.className = 'status error';
+                } else if (event.error === 'no-speech') {
+                    status.textContent = 'No speech detected. Try again.';
+                    status.className = 'status error';
                 }
             };
+
+            return true;
         }
+
+        allowMicBtn.addEventListener('click', async function() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop());
+                micEnabled = true;
+                permissionBox.classList.add('hidden');
+                status.textContent = 'Microphone ready!';
+                status.className = 'status success';
+                
+                if (initSpeechRecognition()) {
+                    status.textContent = 'Microphone ready! Tap to speak.';
+                }
+            } catch (err) {
+                status.textContent = 'Please allow microphone in browser settings';
+                status.className = 'status error';
+            }
+        });
 
         startBtn.addEventListener('click', function() {
             started = true;
@@ -338,52 +377,41 @@
             startBtn.classList.add('hidden');
             mainArea.classList.remove('hidden');
             
+            if (!micEnabled && !recognition) {
+                permissionBox.classList.remove('hidden');
+            }
+            
             const firstLine = dialogues[0];
             addMessage(firstLine, false);
-            status.textContent = 'Neoo is speaking...';
+            status.textContent = 'Speaking...';
             
             setTimeout(function() {
                 speak(firstLine);
+                status.textContent = micEnabled ? 'Tap to speak!' : 'Use text input or allow mic';
+                status.className = 'status';
             }, 500);
         });
 
-        speakBtn.addEventListener('mousedown', function() {
-            if (!recognition) initSpeechRecognition();
-            if (recognition && !recognizing) {
+        micBtn.addEventListener('click', function() {
+            if (!recognition) {
+                if (initSpeechRecognition()) {
+                    setTimeout(function() {
+                        try { recognition.start(); } catch (e) {}
+                    }, 100);
+                }
+                return;
+            }
+            
+            if (recognizing) {
+                recognition.stop();
+            } else {
                 try {
                     recognition.start();
                 } catch (e) {
-                    status.textContent = 'Click Start first';
+                    status.textContent = 'Tap Start first';
                 }
             }
         });
-
-        speakBtn.addEventListener('mouseup', function() {
-            if (recognition && recognizing) {
-                recognition.stop();
-            }
-        });
-
-        speakBtn.addEventListener('mouseleave', function() {
-            if (recognition && recognizing) {
-                recognition.stop();
-            }
-        });
-
-        speakBtn.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            if (!recognition) initSpeechRecognition();
-            if (recognition && !recognizing) {
-                recognition.start();
-            }
-        }, { passive: false });
-
-        speakBtn.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            if (recognition && recognizing) {
-                recognition.stop();
-            }
-        }, { passive: false });
 
         sendBtn.addEventListener('click', function() {
             const text = textInput.value.trim();
@@ -409,7 +437,9 @@
             });
         });
 
-        initSpeechRecognition();
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            permissionBox.innerHTML = '<p>📝 Use text input for conversation</p>';
+        }
     </script>
 </body>
 </html>
